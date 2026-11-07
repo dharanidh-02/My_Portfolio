@@ -1,69 +1,36 @@
-import React from 'react'
 import { motion } from 'framer-motion'
-import { SiLeetcode, SiKaggle, SiGithub } from 'react-icons/si'
+import { ExternalLink } from 'lucide-react'
+import { FaGithub, FaLinkedin } from 'react-icons/fa'
+import { SiKaggle } from 'react-icons/si'
 
 const profiles = [
-  { name: 'LeetCode', icon: SiLeetcode, rating: '1500+', solved: '250+', color: '#FFA116', href: 'https://leetcode.com/u/dharanidh_02/' },
-  { name: 'Skillrack', icon: () => <span className="font-extrabold">SR</span>, rating: 'Gold', solved: '1150+', color: '#00D1FF', href: 'https://www.skillrack.com/faces/resume.xhtml?id=514797&key=79cd5fc9a977158524d4eaee835e8e0bcb367584' },
-  { name: 'GitHub', icon: SiGithub, rating: 'Builder', solved: 'Full-stack repos', color: '#ffffff', href: 'https://github.com/dharanidh-02' },
-  { name: 'Kaggle', icon: SiKaggle, rating: '5+ Badges', solved: '8+ Works', color: '#20BEFF', href: 'https://www.kaggle.com/dharanidharant' },
+  { name: 'GitHub', focus: 'Projects & source code', href: 'https://github.com/dharanidh-02', icon: FaGithub, color: '#f3f4f6' },
+  { name: 'Kaggle', focus: 'Data science & AI', href: 'https://www.kaggle.com/dharanidharaant', icon: SiKaggle, color: '#20beff' },
+  { name: 'SkillRack', focus: 'Programming profile', href: 'https://www.skillrack.com/faces/resume.xhtml?id=514797&key=79cd5fc9a977158524d4eaee835e8e0bcb367584', mark: 'SR', color: '#e1b75c' },
+  { name: 'LinkedIn', focus: 'Professional profile', href: 'https://www.linkedin.com/in/t-dharanidharan/', icon: FaLinkedin, color: '#0a66c2' },
 ]
 
-const ProfileCards = () => {
-  return (
-    <section id="profiles" className="py-24 relative overflow-hidden">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16 space-y-4">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold tracking-tighter"
-          >
-            Coding <span className="text-cyan-glow">Profiles</span>
-          </motion.h2>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {profiles.map((profile, index) => (
-            <motion.a
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="glass p-8 rounded-3xl border-white/5 hover:border-cyan-glow/30 transition-all flex flex-col items-center text-center space-y-4"
-              href={profile.href}
-              target={profile.href ? '_blank' : undefined}
-              rel={profile.href ? 'noreferrer' : undefined}
-            >
-              <div 
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mb-2"
-                style={{ backgroundColor: `${profile.color}15`, color: profile.color }}
-              >
-                <profile.icon />
-              </div>
-              <div>
-                <h4 className="text-xl font-bold">{profile.name}</h4>
-                <p className="text-gray-500 text-xs font-mono uppercase tracking-widest mt-1">Platform</p>
-              </div>
-              <div className="w-full grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
-                <div>
-                  <p className="text-xs text-gray-600 font-bold uppercase">Rating</p>
-                  <p className="font-bold text-cyan-glow">{profile.rating}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-600 font-bold uppercase">Solved</p>
-                  <p className="font-bold text-white">{profile.solved}</p>
-                </div>
-              </div>
-            </motion.a>
-          ))}
-        </div>
+const ProfileCards = () => (
+  <section id="profiles" className="relative border-t border-white/5 bg-[#080808] py-20 sm:py-28">
+    <div className="mx-auto w-full max-w-[1700px] px-5 sm:px-10 lg:px-14">
+      <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#E50914]">Find me online</p>
+      <h2 className="series-display mt-1 text-4xl tracking-wide text-white sm:text-5xl md:text-6xl">Developer Profiles</h2>
+      <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {profiles.map(({ name, focus, href, icon: Icon, mark, color }, index) => (
+          <motion.a key={name} href={href} target="_blank" rel="noreferrer" initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.35, delay: index * 0.04 }} className="group flex min-h-24 items-center gap-4 rounded-xl border border-white/10 bg-[#121215] p-4 transition hover:border-white/30 hover:bg-[#17171a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E50914]">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-black/40 text-2xl" style={{ color }}>
+              {Icon ? <Icon aria-hidden="true" /> : <span className="text-sm font-black">{mark}</span>}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-bold text-white">{name}</span>
+              <span className="mt-1 block text-xs text-white/50">{focus}</span>
+            </span>
+            <ExternalLink size={15} className="shrink-0 text-white/35 transition group-hover:text-white" />
+          </motion.a>
+        ))}
       </div>
-    </section>
-  )
-}
+    </div>
+  </section>
+)
 
 export default ProfileCards

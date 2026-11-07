@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const PageLoader = () => {
@@ -20,7 +20,7 @@ const PageLoader = () => {
           transition={{ duration: 0.8, ease: "easeInOut" }}
           className="fixed inset-0 z-[10000] flex items-center justify-center overflow-hidden bg-background"
         >
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(163,230,53,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(163,230,53,0.04)_1px,transparent_1px)] bg-[size:48px_48px]"></div>
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,107,95,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(77,212,198,0.045)_1px,transparent_1px)] bg-[size:48px_48px]"></div>
           <motion.div
             initial={{ y: "-100%" }}
             animate={{ y: "120%" }}

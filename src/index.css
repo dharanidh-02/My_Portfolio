@@ -1,39 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #020617;
-  --color-secondary-bg: #0f172a;
-  --color-cyan-glow: #a3e635;
-  --color-purple-accent: #8b5cf6;
+  --color-background: #080808;
+  --color-secondary-bg: #141414;
+  --color-card-bg: #181818;
+  --color-surface-elevated: #202020;
+  --color-netflix-red: #E50914;
+  --color-netflix-red-dark: #B81D24;
+  --color-cyan-glow: #E50914;
+  --color-purple-accent: #E50914;
   
-  --font-inter: "Inter", system-ui, sans-serif;
-  
-  --animate-typing: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Bebas Neue", Impact, "Arial Narrow", sans-serif;
 }
 
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-  }
-
-  html[data-theme="aura"] {
-    --color-background: #f8fafc;
-    --color-secondary-bg: #e0f2fe;
-    --color-cyan-glow: #0f766e;
-    --color-purple-accent: #4f46e5;
+    --netflix-black: #080808;
+    --netflix-dark: #141414;
+    --netflix-card: #181818;
+    --netflix-red: #E50914;
+    --netflix-red-hover: #b80710;
   }
 
   * {
-    @apply border-white/10;
+    box-sizing: border-box;
   }
 
   body {
-    @apply bg-background text-white font-inter selection:bg-cyan-glow/30 selection:text-white;
+    background-color: #080808;
+    color: #FFFFFF;
+    font-family: var(--font-inter);
     overflow-x: hidden;
-    cursor: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  ::selection {
+    background: rgba(229, 9, 20, 0.4);
+    color: #fff;
   }
 
   a,
@@ -46,301 +51,96 @@
   }
 
   section {
-    scroll-margin-top: 7rem;
+    scroll-margin-top: 5rem;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid #e50914;
+    outline-offset: 4px;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
-  }
-  
-  .glass-card {
-    @apply bg-secondary-bg/40 backdrop-blur-xl border border-white/10 hover:border-cyan-glow/30 transition-all duration-500 rounded-2xl;
+  .netflix-heading {
+    @apply font-black tracking-tight text-white uppercase;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
-  .text-glow-cyan {
-    text-shadow: 0 0 10px rgba(163, 230, 53, 0.5);
+  .netflix-subhead {
+    @apply text-sm md:text-base text-[#B3B3B3] leading-relaxed;
   }
 
-  .glow-cyan {
-    box-shadow: 0 0 20px rgba(163, 230, 53, 0.2);
+  .netflix-rail {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 0.5rem;
+    overscroll-behavior-x: auto;
+    overscroll-behavior-y: auto;
+  }
+  .netflix-rail > * {
+    scroll-snap-align: start;
+  }
+  .netflix-rail::-webkit-scrollbar {
+    display: none;
   }
 
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-glow to-purple-accent;
+  .netflix-button-play {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-white px-7 py-3 text-sm md:text-base font-extrabold text-black transition-all duration-200 hover:bg-white/85 hover:scale-105 active:scale-95 shadow-[0_4px_25px_rgba(255,255,255,0.25)];
   }
 
-  .project-journey-line {
-    background: linear-gradient(to bottom, #f59e0b, rgba(255, 255, 255, 0.1), #14b8a6);
+  .netflix-button-info {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-white/20 border border-white/20 px-7 py-3 text-sm md:text-base font-bold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/30 hover:scale-105 active:scale-95;
   }
 
-  .nav-active-glass {
-    border-color: rgba(56, 189, 248, 0.42);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(14, 165, 233, 0.1)),
-      rgba(14, 165, 233, 0.18);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 0 22px rgba(56, 189, 248, 0.28);
+  .netflix-button-red {
+    @apply inline-flex items-center justify-center gap-2 rounded bg-[#E50914] px-7 py-3 text-sm md:text-base font-bold text-white transition-all duration-200 hover:bg-[#b80710] hover:scale-105 active:scale-95 shadow-[0_4px_25px_rgba(229,9,20,0.4)];
   }
 
-  html[data-theme="aura"] body {
-    color: #1f2937;
+  .card-hover-scale {
+    transition: transform 0.35s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.35s ease, border-color 0.35s ease;
   }
-
-  html[data-theme="aura"] .text-white {
-    color: #1f2937;
-  }
-
-  html[data-theme="aura"] .text-background {
-    color: #ffffff;
-  }
-
-  html[data-theme="aura"] .bg-white.text-background {
-    color: #0f172a;
-  }
-
-  html[data-theme="aura"] .text-gray-300,
-  html[data-theme="aura"] .text-gray-400 {
-    color: #4b5563;
-  }
-
-  html[data-theme="aura"] .text-gray-500,
-  html[data-theme="aura"] .text-gray-700 {
-    color: #6b7280;
-  }
-
-  html[data-theme="aura"] .glass,
-  html[data-theme="aura"] .glass-card {
-    background: rgba(255, 255, 255, 0.72);
-    border-color: rgba(15, 118, 110, 0.18);
-    box-shadow: 0 18px 60px rgba(79, 70, 229, 0.08);
-  }
-
-  html[data-theme="aura"] .bg-white\/5,
-  html[data-theme="aura"] .bg-white\/\[0\.03\],
-  html[data-theme="aura"] .bg-white\/\[0\.035\],
-  html[data-theme="aura"] .bg-white\/\[0\.04\],
-  html[data-theme="aura"] .bg-white\/\[0\.055\] {
-    background-color: rgba(255, 255, 255, 0.72);
-  }
-
-  html[data-theme="aura"] .border-white\/10,
-  html[data-theme="aura"] .border-white\/5 {
-    border-color: rgba(15, 118, 110, 0.18);
-  }
-
-  html[data-theme="aura"] .bg-background\/20,
-  html[data-theme="aura"] .bg-background\/45,
-  html[data-theme="aura"] .bg-background\/60,
-  html[data-theme="aura"] .bg-background\/70,
-  html[data-theme="aura"] .bg-background\/80,
-  html[data-theme="aura"] .bg-background\/95 {
-    background-color: rgba(248, 250, 252, 0.86);
-  }
-
-  html[data-theme="aura"] .project-journey-line {
-    background: linear-gradient(to bottom, #0f766e, rgba(79, 70, 229, 0.35), #0284c7);
-  }
-
-  html[data-theme="aura"] .nav-active-glass {
-    border-color: rgba(15, 118, 110, 0.28);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(15, 118, 110, 0.08)),
-      rgba(255, 255, 255, 0.68);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 14px 32px rgba(15, 118, 110, 0.16);
-  }
-
-  html[data-theme="aura"] .nav-link-active {
-    color: #0f766e;
-  }
-
-  html[data-theme="aura"] .spline-watermark-cover,
-  html[data-theme="aura"] .intro-watermark-cover {
-    background: linear-gradient(135deg, rgba(248, 250, 252, 0), #f8fafc 36%);
-  }
-
-  html[data-theme="aura"] .contact-robot-frame .spline-watermark-cover {
-    background: linear-gradient(135deg, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.9) 34%, #f8fafc 100%);
-  }
-
-  .robot-stage {
-    @apply overflow-hidden rounded-[2rem];
-    mask-image: linear-gradient(to bottom, transparent 0%, black 2%, black 98%, transparent 100%);
-  }
-
-  .robot-stage spline-viewer,
-  .cinematic-spline {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-  }
-
-  .robot-stage spline-viewer {
-    transform: scale(1.72) translate(1%, 3%);
-    transform-origin: center center;
-  }
-
-  .spline-watermark-cover {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 20;
-    width: 220px;
-    height: 86px;
-    pointer-events: none;
-    background: linear-gradient(135deg, rgba(2, 6, 23, 0), #020617 34%);
-  }
-
-  .cinematic-robot-frame {
-    @apply relative w-full h-full overflow-hidden;
-    background:
-      radial-gradient(circle at 50% 42%, rgba(163, 230, 53, 0.16), transparent 32%),
-      linear-gradient(180deg, #06111f 0%, #020617 48%, #07101d 100%);
-  }
-
-  .cinematic-spline {
-    transform: scale(1.34) translateY(-2%);
-    transform-origin: center center;
-  }
-
-  .cinematic-robot-frame .spline-watermark-cover {
-    width: 260px;
-    height: 108px;
-    background: linear-gradient(135deg, rgba(2, 6, 23, 0), #07101d 30%, #020617 100%);
-  }
-
-  .intro-spline {
-    display: block;
-    width: 108vw;
-    height: 108vh;
-    transform: translate(-4vw, -4vh) scale(1.04);
-    transform-origin: center center;
-    background: #020617;
-  }
-
-  .intro-watermark-cover {
-    position: absolute;
-    right: 0;
-    bottom: 0;
+  .card-hover-scale:hover {
+    transform: scale(1.08) translateY(-4px);
     z-index: 30;
-    width: 280px;
-    height: 110px;
-    pointer-events: none;
-    background: linear-gradient(135deg, rgba(2, 6, 23, 0), #020617 36%);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9), 0 0 25px rgba(229, 9, 20, 0.4);
+    border-color: #E50914 !important;
   }
 
-  .contact-robot-frame {
-    @apply overflow-hidden rounded-[2rem];
-    background:
-      radial-gradient(circle at 50% 45%, rgba(163, 230, 53, 0.09), transparent 36%),
-      linear-gradient(180deg, rgba(6, 17, 31, 0.42) 0%, rgba(2, 6, 23, 0.08) 62%, rgba(2, 6, 23, 0) 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 4%, black 94%, transparent 100%);
+  .series-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
   }
 
-  .contact-robot-spline {
-    display: block;
-    width: 100%;
-    height: 100%;
-    transform: scale(1.04) translate(6%, 1%);
-    transform-origin: center center;
-    background: transparent;
-  }
-
-  .contact-robot-frame .spline-watermark-cover {
-    width: 230px;
-    height: 92px;
-    background: linear-gradient(135deg, rgba(2, 6, 23, 0), rgba(2, 6, 23, 0.88) 34%, #020617 100%);
+  .series-rail-card {
+    scroll-snap-align: start;
   }
 }
 
-@media (max-width: 1023px) {
-  .robot-stage spline-viewer {
-    transform: scale(1.58) translateY(2%);
-  }
-
-  .cinematic-spline {
-    transform: scale(1.46) translateY(-2%);
-  }
-
-  .contact-robot-spline {
-    transform: scale(1.08) translate(5%, 1%);
-  }
-}
-
-@media (max-width: 640px) {
-  .robot-stage {
-    border-radius: 1.25rem;
-    mask-image: linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
-  }
-
-  .robot-stage spline-viewer {
-    transform: scale(1.62) translateY(2%);
-  }
-
-  .spline-watermark-cover {
-    width: 180px;
-    height: 72px;
-  }
-
-  .cinematic-spline {
-    transform: scale(1.58) translateY(-1%);
-  }
-
-  .cinematic-robot-frame .spline-watermark-cover {
-    width: 210px;
-    height: 88px;
-  }
-
-  .contact-robot-frame {
-    border-radius: 1.25rem;
-  }
-
-  .contact-robot-spline {
-    transform: scale(1.12) translate(4%, 1%);
-  }
-
-  .contact-robot-frame .spline-watermark-cover {
-    width: 190px;
-    height: 76px;
-  }
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
-}
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: #a3e635 }
-}
-
-/* Custom Scrollbar */
+/* Custom Netflix Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #080808;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #262626;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #E50914;
 }
 
-/* Lenis CSS */
+/* Lenis Smooth Scroll */
 html.lenis {
   height: auto;
 }
@@ -349,14 +149,34 @@ html.lenis {
   scroll-behavior: auto;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
 .lenis.lenis-stopped {
   overflow: hidden;
 }
 
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom Netflix Cursor (Fine pointer devices only) */
+@media (hover: hover) and (pointer: fine) {
+  body:not(.reduced-motion) {
+    cursor: none;
+  }
+  body:not(.reduced-motion) a,
+  body:not(.reduced-motion) button,
+  body:not(.reduced-motion) [role="button"],
+  body:not(.reduced-motion) select {
+    cursor: none;
+  }
+  body:not(.reduced-motion) input,
+  body:not(.reduced-motion) textarea {
+    cursor: text;
+  }
 }

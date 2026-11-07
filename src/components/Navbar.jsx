@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, Sparkles, SunMoon, X } from 'lucide-react'
+import { Search, Bell, ExternalLink, FileText, ChevronDown, Menu, X, RotateCcw } from 'lucide-react'
+import { playTudum } from '../utils/tudum'
+import profileAvatar from '../assets/resume.png'
 
 const navLinks = [
   { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Experience', href: '#experience' },
+  { name: 'My Profile', href: '#profile' },
   { name: 'Projects', href: '#projects' },
+  { name: 'Experience', href: '#experience' },
+  { name: 'Skills', href: '#skills' },
   { name: 'Achievements', href: '#achievements' },
-  { name: 'Certifications', href: '#certifications' },
   { name: 'Contact', href: '#contact' },
 ]
 
-const Navbar = () => {
+const Navbar = ({ onOpenResume, onReplayIntro }) => {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [altTheme, setAltTheme] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false)
+  const [showSearchInput, setShowSearchInput] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
+      setScrolled(window.scrollY > 40)
     }
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -31,21 +34,21 @@ const Navbar = () => {
     let ticking = false
 
     const updateActiveSection = () => {
-      const scrollMarker = window.scrollY + window.innerHeight * 0.36
-      let currentSection = 'home'
+      const scrollMarker = window.scrollY + window.innerHeight * 0.35
+      let current = 'home'
 
       navLinks.forEach((link) => {
         const section = document.querySelector(link.href)
         if (section && section.offsetTop <= scrollMarker) {
-          currentSection = section.id
+          current = link.href.slice(1)
         }
       })
 
-      setActiveSection(currentSection)
+      setActiveSection(current)
       ticking = false
     }
 
-    const handleSectionScroll = () => {
+    const handleScrollThrottled = () => {
       if (!ticking) {
         window.requestAnimationFrame(updateActiveSection)
         ticking = true
@@ -53,130 +56,303 @@ const Navbar = () => {
     }
 
     updateActiveSection()
-    window.addEventListener('scroll', handleSectionScroll, { passive: true })
-    window.addEventListener('resize', handleSectionScroll)
+    window.addEventListener('scroll', handleScrollThrottled, { passive: true })
+    window.addEventListener('resize', handleScrollThrottled)
 
     return () => {
-      window.removeEventListener('scroll', handleSectionScroll)
-      window.removeEventListener('resize', handleSectionScroll)
+      window.removeEventListener('scroll', handleScrollThrottled)
+      window.removeEventListener('resize', handleScrollThrottled)
     }
   }, [])
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('portfolio-theme')
-    const useAltTheme = savedTheme === 'aura'
-    setAltTheme(useAltTheme)
-    document.documentElement.dataset.theme = useAltTheme ? 'aura' : 'default'
-  }, [])
-
-  const toggleTheme = () => {
-    const nextTheme = !altTheme
-    setAltTheme(nextTheme)
-    document.documentElement.dataset.theme = nextTheme ? 'aura' : 'default'
-    localStorage.setItem('portfolio-theme', nextTheme ? 'aura' : 'default')
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (!searchQuery.trim()) return
+    const q = searchQuery.toLowerCase().trim()
+    const match = navLinks.find((l) => l.name.toLowerCase().includes(q))
+    if (match) {
+      document.querySelector(match.href)?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })
+    }
+    setShowSearchInput(false)
   }
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[1000] pointer-events-none py-3">
-      <div className="container mx-auto px-6">
-        <div className="pointer-events-auto flex items-center justify-between gap-4 rounded-[1.25rem] border border-cyan-glow/20 bg-background/85 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.22)] backdrop-blur-2xl transition-all duration-500">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="shrink-0"
-        >
-          <a href="#home" className="group flex items-center gap-3">
-            <span className="grid h-11 w-11 place-items-center rounded-xl border border-cyan-glow/30 bg-cyan-glow/10 text-sm font-black text-cyan-glow transition-transform group-hover:rotate-6">
-              DD
+    <nav
+      className={`fixed left-0 top-0 z-[1000] w-full transition-all duration-500 ${
+        scrolled
+          ? 'bg-[#141414] shadow-[0_8px_30px_rgba(0,0,0,0.85)] border-b border-white/5 py-3'
+          : 'bg-gradient-to-b from-black/90 via-black/50 to-transparent py-4 sm:py-5'
+      }`}
+    >
+      <div className="mx-auto flex w-full max-w-[1700px] items-center justify-between px-5 sm:px-10 lg:px-14">
+        {/* Left: Netflix Red Brand Logo */}
+        <div className="flex items-center gap-8 lg:gap-12">
+          <a
+            href="#home"
+            onClick={playTudum}
+            className="group flex items-center gap-2 tracking-tight transition-transform duration-200 hover:scale-105"
+            title="Dharanidharan Series — Play Chime"
+          >
+            <span
+              className="text-2xl sm:text-3xl font-black tracking-tighter text-[#E50914] drop-shadow-[0_2px_12px_rgba(229,9,20,0.7)]"
+              style={{ fontFamily: 'Impact, -apple-system, sans-serif' }}
+            >
+              DHARANIDHARAN
             </span>
-            <span className="hidden sm:block">
-              <span className="block text-lg font-black tracking-tighter gradient-text">DHARANIDHARAN T</span>
-              <span className="block text-[10px] font-bold uppercase tracking-[0.28em] text-gray-500">Portfolio</span>
+            <span className="rounded bg-[#E50914]/20 border border-[#E50914]/40 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-[#E50914] hidden sm:inline-block">
+              SERIES
             </span>
           </a>
-        </motion.div>
 
-        {/* Desktop Menu */}
-        <div className="hidden lg:flex items-center rounded-2xl border border-white/10 bg-white/[0.04] p-1 backdrop-blur-xl">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className={`nav-link-item relative isolate overflow-hidden rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 hover:text-cyan-glow ${
-                activeSection === link.href.slice(1)
-                  ? 'nav-link-active text-white -translate-y-0.5'
-                  : 'text-gray-400'
-              }`}
-            >
-              {activeSection === link.href.slice(1) && (
-                <motion.span
-                  layoutId="active-nav-glass"
-                  className="nav-active-glass absolute inset-0 -z-10 rounded-xl border backdrop-blur-xl"
-                  transition={{ type: 'spring', stiffness: 520, damping: 38, mass: 0.7 }}
-                />
-              )}
-              <span className="relative z-10">{link.name}</span>
-            </a>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="hidden h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/[0.04] text-cyan-glow backdrop-blur-md transition-all hover:border-cyan-glow/50 hover:bg-cyan-glow/10 lg:grid"
-          aria-label="Swap website color theme"
-          title="Swap color theme"
-        >
-          <SunMoon className="h-5 w-5" />
-        </button>
-
-        {/* Mobile Toggle */}
-        <div className="flex items-center gap-3 lg:hidden">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-cyan-glow"
-            aria-label="Swap website color theme"
-          >
-            <SunMoon className="h-4 w-4" />
-          </button>
-          <button
-            className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 text-white focus:outline-none"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 w-full border-b border-white/10 bg-background/95 backdrop-blur-xl lg:hidden"
-          >
-            <div className="flex flex-col p-6 space-y-4">
-              <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.32em] text-cyan-glow">
-                <Sparkles className="h-3 w-3" />
-                Navigation
-              </span>
-              {navLinks.map((link) => (
+          {/* Centre: Netflix Nav Items */}
+          <div className="hidden items-center gap-5 md:flex lg:gap-7">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.slice(1)
+              return (
                 <a
                   key={link.name}
                   href={link.href}
-                  className={`rounded-xl px-3 py-2 text-lg font-medium transition-colors hover:text-cyan-glow ${
-                    activeSection === link.href.slice(1) ? 'border border-cyan-glow/30 bg-cyan-glow/10 text-cyan-glow' : ''
+                  className={`text-[13px] font-medium transition-colors duration-200 hover:text-white relative py-1 ${
+                    isActive ? 'text-white font-bold' : 'text-[#B3B3B3]'
                   }`}
-                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.name}
+                  {isActive && (
+                    <motion.div
+                      layoutId="netflix-nav-underline"
+                      className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#E50914] shadow-[0_0_8px_#E50914]"
+                      transition={{ type: 'spring', stiffness: 450, damping: 35 }}
+                    />
+                  )}
                 </a>
-              ))}
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Right: Search, Notification, Resume Button, Profile Avatar */}
+        <div className="flex items-center gap-4 sm:gap-6">
+          {/* Search Trigger */}
+          <div className="relative">
+            {showSearchInput ? (
+              <form onSubmit={handleSearchSubmit} className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="Titles, stacks, skills..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                  onBlur={() => !searchQuery && setShowSearchInput(false)}
+                  className="w-36 sm:w-56 rounded border border-white/30 bg-black/90 px-3 py-1.5 text-xs text-white placeholder-gray-400 focus:border-[#E50914] focus:outline-none"
+                />
+                <button type="submit" className="ml-1.5 text-gray-300 hover:text-white" aria-label="Search">
+                  <Search size={16} />
+                </button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowSearchInput(true)}
+                className="text-gray-300 transition-colors hover:text-white"
+                aria-label="Search portfolio"
+                title="Search portfolio"
+              >
+                <Search size={18} />
+              </button>
+            )}
+          </div>
+
+          {/* Notifications Icon with dot */}
+          <a
+            href="#achievements"
+            className="relative text-gray-300 transition-colors hover:text-white"
+            title="Latest achievements & recognitions"
+            aria-label="View achievements"
+          >
+            <Bell size={18} />
+            <span className="absolute -right-0.5 -top-0.5 flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E50914] opacity-75"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E50914]"></span>
+            </span>
+          </a>
+
+          {/* Red Resume Button */}
+          <button
+            type="button"
+            onClick={onOpenResume}
+            className="hidden sm:inline-flex items-center gap-1.5 rounded bg-[#E50914] px-4 py-1.5 text-xs font-bold text-white transition-all duration-200 hover:bg-[#b80710] shadow-[0_2px_12px_rgba(229,9,20,0.35)]"
+          >
+            <FileText size={14} />
+            <span>Resume</span>
+          </button>
+
+          {/* Profile Avatar / Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              onMouseEnter={() => setShowProfileDropdown(true)}
+              className="flex items-center gap-1.5 rounded focus:outline-none"
+              aria-label="Developer profile menu"
+            >
+              <div className="h-8 w-8 overflow-hidden rounded border border-white/20 bg-[#141414] shadow-[0_0_10px_rgba(229,9,20,0.4)]">
+                <img
+                  src={profileAvatar}
+                  alt="Dharanidharan T"
+                  className="h-full w-full object-cover object-[center_16%]"
+                />
+              </div>
+              <ChevronDown
+                size={14}
+                className={`text-gray-400 transition-transform duration-200 ${
+                  showProfileDropdown ? 'rotate-180 text-white' : ''
+                }`}
+              />
+            </button>
+
+            {/* Profile Dropdown */}
+            <AnimatePresence>
+              {showProfileDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.16 }}
+                  onMouseLeave={() => setShowProfileDropdown(false)}
+                  className="absolute right-0 top-full mt-2 w-72 rounded-md border border-white/10 bg-[#141414] p-4 text-xs shadow-2xl backdrop-blur-xl z-50"
+                >
+                  <div className="flex items-center gap-3 border-b border-white/10 pb-3">
+                    <img
+                      src={profileAvatar}
+                      alt="Dharanidharan"
+                      className="h-10 w-10 rounded object-cover object-[center_16%] border border-[#E50914]"
+                    />
+                    <div>
+                      <p className="font-bold text-white">Dharanidharan T</p>
+                      <p className="text-[10px] text-gray-400">AI / Full-Stack Engineer</p>
+                      <span className="inline-block mt-0.5 rounded bg-emerald-500/20 px-2 py-0.5 text-[9px] font-bold text-emerald-400">
+                        Available for Internships
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="py-2.5 space-y-1">
+                    <a
+                      href="#profile"
+                      onClick={() => setShowProfileDropdown(false)}
+                      className="block rounded px-2.5 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white"
+                    >
+                      My Developer Profile
+                    </a>
+                    <a
+                      href="#projects"
+                      onClick={() => setShowProfileDropdown(false)}
+                      className="block rounded px-2.5 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white"
+                    >
+                      Browse Featured Work
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowProfileDropdown(false)
+                        onOpenResume?.()
+                      }}
+                      className="w-full text-left rounded px-2.5 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white"
+                    >
+                      View & Download Resume
+                    </button>
+                    {onReplayIntro && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowProfileDropdown(false)
+                          onReplayIntro()
+                        }}
+                        className="w-full text-left flex items-center gap-1.5 rounded px-2.5 py-1.5 text-gray-300 hover:bg-white/10 hover:text-white"
+                      >
+                        <RotateCcw size={12} className="text-[#E50914]" />
+                        <span>Replay Netflix Startup Intro</span>
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="border-t border-white/10 pt-2.5 flex items-center justify-between text-[11px] text-gray-400">
+                    <a
+                      href="https://github.com/dharanidh-02"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-white flex items-center gap-1"
+                    >
+                      GitHub <ExternalLink size={10} />
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/dharanidharan-t-180a79321/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:text-white flex items-center gap-1"
+                    >
+                      LinkedIn <ExternalLink size={10} />
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile Hamburger */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="grid h-9 w-9 place-items-center rounded border border-white/20 bg-black/60 text-white md:hidden"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border-b border-white/10 bg-[#141414] px-6 py-5 md:hidden"
+          >
+            <div className="flex flex-col space-y-3">
+              {navLinks.map((link) => {
+                const isActive = activeSection === link.href.slice(1)
+                return (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`rounded px-3 py-2 text-sm font-semibold transition-colors ${
+                      isActive
+                        ? 'border-l-4 border-[#E50914] bg-white/5 text-white pl-4'
+                        : 'text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    {link.name}
+                  </a>
+                )
+              })}
+
+              <div className="pt-3 border-t border-white/10 flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false)
+                    onOpenResume?.()
+                  }}
+                  className="w-full rounded bg-[#E50914] py-2.5 text-center text-xs font-bold text-white shadow-lg"
+                >
+                  View Official Resume
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

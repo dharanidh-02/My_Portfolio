@@ -1,89 +1,128 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check, ExternalLink, X } from 'lucide-react'
+import { FaGithub } from 'react-icons/fa'
+import HorizontalCarousel from '../components/HorizontalCarousel'
 
-const experiences = [
+const experienceEntries = [
   {
-    company: 'College CRM System',
-    role: 'MERN Intern',
+    id: 'byts-india',
+    company: 'BYTS INDIA',
+    monogram: 'BYTS',
+    role: 'Full Stack Development Intern',
     period: '2025',
-    description: 'Developed a scalable College CRM system with role-based authentication for Admins, Faculty, and Teachers. Built responsive dashboards using React.js, Tailwind CSS, Ant Design, Node.js, and MongoDB Atlas. Implemented attendance management, report generation, and user administration workflows. Deployed the platform on AWS cloud infrastructure.',
-    tags: ['React.js', 'Tailwind CSS', 'Node.js', 'MongoDB', 'AWS', 'Ant Design'],
-    github: 'https://github.com/dharanidh-02/Mern_CRM',
-    link: 'https://clg-crm.netlify.app/',
+    summary: 'Contributed to a College CRM with role-based access, attendance workflows and report exports.',
+    contributions: [
+      'Built responsive interfaces with React, Tailwind CSS and Ant Design.',
+      'Implemented API routes with Node.js and Express, backed by MongoDB Atlas.',
+      'Worked on attendance tracking and PDF or spreadsheet report exports.',
+      'Deployed application services on AWS.',
+    ],
+    technologies: ['React', 'Node.js', 'Express', 'MongoDB Atlas', 'AWS'],
+    repository: 'https://github.com/dharanidh-02/Mern_CRM',
+    accent: '#e50914',
+  },
+  {
+    id: 'vsphere-technologies',
+    company: 'VSPHERE TECHNOLOGIES',
+    monogram: 'V',
+    role: 'DevOps Intern',
+    period: '2025–2026',
+    summary: 'Worked with deployment workflows, containers and cloud infrastructure.',
+    contributions: [
+      'Built familiarity with CI/CD workflows and container image builds.',
+      'Worked with Docker and Kubernetes deployment concepts.',
+      'Used Linux and AWS cloud tooling in infrastructure workflows.',
+      'Explored GitOps deployment patterns with Argo CD.',
+    ],
+    technologies: ['Docker', 'Kubernetes', 'AWS', 'GitLab CI/CD', 'Argo CD', 'Linux'],
+    accent: '#92a8bf',
   },
 ]
 
-const Experience = () => {
+const ExperienceDetails = ({ entry, onClose }) => {
+  useEffect(() => {
+    if (!entry) return undefined
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [entry, onClose])
+
   return (
-    <section id="experience" className="py-24 bg-secondary-bg/20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold tracking-tighter"
-          >
-            Professional <span className="text-cyan-glow">Journey</span>
-          </motion.h2>
-        </div>
-
-        <div className="max-w-4xl mx-auto space-y-12">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative pl-8 md:pl-0"
-            >
-              <div className="md:grid md:grid-cols-5 gap-8 items-start">
-                {/* Period */}
-                <div className="md:col-span-1 text-cyan-glow font-bold text-xl md:text-right pt-2">
-                  {exp.period}
-                </div>
-
-                {/* Content */}
-                <div className="md:col-span-4 glass-card p-8 relative">
-                  {/* Timeline Dot */}
-                  <div className="absolute top-8 left-[-45px] md:left-[-41px] w-4 h-4 bg-cyan-glow rounded-full border-4 border-background z-10 shadow-[0_0_10px_#a3e635]"></div>
-                  {/* Timeline Line */}
-                  <div className="absolute top-0 bottom-0 left-[-37px] md:left-[-33px] w-[2px] bg-white/5 md:hidden"></div>
-
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
-                    <h3 className="text-2xl font-bold text-white">{exp.company}</h3>
-                    <span className="px-4 py-1 glass rounded-full text-xs font-bold text-cyan-glow uppercase tracking-widest">{exp.role}</span>
-                  </div>
-                  
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    {exp.description}
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {exp.tags.map((tag, tagIndex) => (
-                      <span key={tagIndex} className="text-[10px] font-bold px-3 py-1 bg-white/5 border border-white/10 rounded-md text-gray-500 hover:text-cyan-glow transition-colors">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex flex-wrap gap-4 mt-8">
-                    <a href={exp.github} target="_blank" rel="noreferrer" className="flex items-center space-x-2 px-6 py-2 glass rounded-full hover:bg-white/10 transition-all">
-                      <FaGithub />
-                      <span className="text-sm font-bold">GitHub</span>
-                    </a>
-                    <a href={exp.link} target="_blank" rel="noreferrer" className="flex items-center space-x-2 px-6 py-2 bg-white text-background rounded-full hover:bg-cyan-glow hover:text-background transition-all font-bold">
-                      <FaExternalLinkAlt className="text-sm" />
-                      <span className="text-sm">Website</span>
-                    </a>
-                  </div>
-                </div>
+    <AnimatePresence>
+      {entry && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6">
+          <motion.button type="button" aria-label="Close experience details" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
+          <motion.div role="dialog" aria-modal="true" aria-labelledby="experience-title" initial={{ opacity: 0, scale: 0.97, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97, y: 12 }} className="relative z-10 w-full max-w-2xl overflow-hidden rounded-xl border border-white/15 bg-[#151619] shadow-2xl">
+            <div className="flex items-start gap-4 border-b border-white/10 p-5 sm:p-7">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-lg border border-white/10 bg-black/35 text-lg font-black tracking-wide" style={{ color: entry.accent }}>{entry.monogram}</span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">{entry.company} · {entry.period}</p>
+                <h2 id="experience-title" className="series-display mt-1 text-3xl tracking-wide text-white sm:text-4xl">{entry.role}</h2>
               </div>
-            </motion.div>
-          ))}
+              <button type="button" onClick={onClose} aria-label="Close experience details" className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"><X size={17} /></button>
+            </div>
+            <div className="p-5 sm:p-7">
+              <p className="text-sm leading-6 text-white/65">{entry.summary}</p>
+              <ul className="mt-5 space-y-3">
+                {entry.contributions.map((contribution) => (
+                  <li key={contribution} className="flex gap-2.5 text-sm leading-6 text-white/75"><Check size={16} className="mt-1 shrink-0" style={{ color: entry.accent }} /><span>{contribution}</span></li>
+                ))}
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-2 border-t border-white/10 pt-5">
+                {entry.technologies.map((technology) => <span key={technology} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/65">{technology}</span>)}
+              </div>
+              {entry.repository && <a href={entry.repository} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-white/85"><FaGithub size={15} /> View related repository <ExternalLink size={13} /></a>}
+            </div>
+          </motion.div>
         </div>
+      )}
+    </AnimatePresence>
+  )
+}
+
+const Experience = () => {
+  const [selectedEntry, setSelectedEntry] = useState(null)
+
+  return (
+    <section id="experience" className="relative border-t border-white/5 bg-[#080808]">
+      <div className="mx-auto w-full max-w-[1700px]">
+        <HorizontalCarousel
+          ariaLabel="Professional experience"
+          header={
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#a7bacd]">Professional experience</p>
+              <h2 className="series-display mt-1 text-4xl tracking-wide text-white sm:text-5xl md:text-6xl">Work & Internships</h2>
+              <p className="mt-2 max-w-2xl text-sm text-white/60">Roles and hands-on work across full-stack development and DevOps.</p>
+            </div>
+          }
+          className="mx-auto w-full max-w-[1700px]"
+          trackClassName="py-4"
+        >
+        {experienceEntries.map((entry, index) => (
+          <motion.article key={entry.id} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.4, delay: index * 0.08 }} className="series-rail-card group relative flex h-[275px] w-full max-w-[360px] shrink-0 flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-[#141518] p-5 transition duration-300 hover:border-white/25 hover:shadow-xl sm:h-[290px] sm:w-[360px]">
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-1 opacity-70" style={{ backgroundColor: entry.accent }} />
+            <div className="relative z-10 flex items-start justify-between gap-4">
+              <span className="grid h-12 min-w-12 place-items-center rounded-md border border-white/10 bg-black/35 px-2 text-xs font-black tracking-wide" style={{ color: entry.accent }}>{entry.monogram}</span>
+              <span className="rounded-full border border-white/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-white/45">{entry.period}</span>
+            </div>
+            <div className="relative z-10">
+              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-white/45">{entry.company}</p>
+              <h3 className="series-display mt-1 text-2xl tracking-wide text-white">{entry.role}</h3>
+              <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-white/55">{entry.summary}</p>
+            </div>
+            <div className="relative z-10 flex items-end justify-between gap-3 border-t border-white/10 pt-3">
+              <div className="flex flex-wrap gap-1.5">{entry.technologies.slice(0, 3).map((technology) => <span key={technology} className="rounded-sm bg-white/[0.05] px-1.5 py-1 text-[9px] text-white/55">{technology}</span>)}</div>
+              <button type="button" onClick={() => setSelectedEntry(entry)} className="shrink-0 rounded border border-white/15 px-3 py-1.5 text-[10px] font-bold text-white/75 transition hover:border-white/40 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E50914]">Details</button>
+            </div>
+          </motion.article>
+        ))}
+        </HorizontalCarousel>
       </div>
+
+      <ExperienceDetails entry={selectedEntry} onClose={() => setSelectedEntry(null)} />
     </section>
   )
 }
